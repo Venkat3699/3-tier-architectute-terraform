@@ -38,15 +38,29 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: '1.11.3'
-
+  terraform_init:
+    name: terraform Format
+    runs-on: terraform-runner
+    needs: terraform
+    steps:
     - name: Terraform Init
       working-directory: dev
       run: terraform init
 
+  terraform_format:
+    name: terraform Format
+    runs-on: terraform-runner
+    needs: terraform_init
+    steps:
     - name: Terraform format
       working-directory: dev
       run: terraform fmt
 
+  terraform_validate:
+    name: terraform Validate
+    runs-on: terraform-runner
+    needs: terraform_format
+    steps:
     - name: Terraform validate
       working-directory: dev
       run: terraform validate
