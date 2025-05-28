@@ -26,7 +26,7 @@ module "dev_subnets" {
 
 
 module "dev_Igw" {
-  source  = "../modules/InternetGateway"
+  source  = "../modules/internetGateway"
   vpc_id  = module.dev_vpc.vpc_id
   env     = "dev"
   owner   = "DevOps"
