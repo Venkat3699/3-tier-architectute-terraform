@@ -71,6 +71,12 @@ jobs:
         export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
         terraform plan -out=tfplan
 
+    - name: Upload tfplan artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfplan
+        path: dev/tfplan
+
   terraform-apply:
     name: 'Terraform Apply'
     runs-on: terraform-runner
@@ -89,6 +95,12 @@ jobs:
 
       - name: 'Verify AWS Credentials'
         run: aws sts get-caller-identity
+
+      - name: Download tfplan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: dev
 
       - name: 'Terraform Apply'
         working-directory: dev
