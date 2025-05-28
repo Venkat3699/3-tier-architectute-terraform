@@ -79,7 +79,7 @@ jobs:
 
   terraform-destroy:
     name: 'Terraform Destroy'
-    runs-on: terraform_runner
+    runs-on: terraform-runner
     needs: terraform
     if: github.event_name == 'workflow_dispatch'
     steps:
