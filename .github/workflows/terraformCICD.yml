@@ -1,4 +1,4 @@
-name: 'Terraform CI/CD Pipeline'
+name: 'Terraform CICD pipeline'
 
 on:
   push:
@@ -9,74 +9,44 @@ permissions:
   contents: read
 
 jobs:
-  terraform-init:
-    name: 'Terraform Init'
+  terraform:
+    name: 'Terraform'
     runs-on: terraform-runner
     environment: Dev
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'ap-south-1'
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: '1.1.3'
+    - name: 'Configure AWS credentials'
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: 'ap-south-1'
 
-      - name: Terraform Init
-        working-directory: dev
-        run: terraform init
+    - name: 'Verify AWS Credentials'
+      run: aws sts get-caller-identity
 
-  terraform-fmt:
-    name: 'Terraform Format'
-    runs-on: terraform-runner
-    needs: terraform-init
+    - name: 'Set up Terraform'
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: '1.11.3'
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Terraform Init
+      working-directory: dev
+      run: terraform init
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: '1.1.3'
+    - name: Terraform format
+      working-directory: dev
+      run: terraform fmt
 
-      - name: Terraform Format
-        working-directory: dev
-        run: terraform fmt -recursive
-      
-      - name: Terraform Format
-        working-directory: dev
-        run: terraform fmt -check
-
-  terraform-validate:
-    name: 'Terraform Validate'
-    runs-on: terraform-runner
-    needs: terraform-fmt
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'ap-south-1'
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: '1.1.3'
-
-      - name: Terraform Validate
-        working-directory: dev
-        run: terraform validate
+    - name: Terraform validate
+      working-directory: dev
+      run: terraform validate
