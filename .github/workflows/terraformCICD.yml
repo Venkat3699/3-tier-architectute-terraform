@@ -50,6 +50,10 @@ jobs:
 
       - name: Terraform Format
         working-directory: dev
+        run: terraform fmt -recursive
+      
+      - name: Terraform Format
+        working-directory: dev
         run: terraform fmt -check
 
   terraform-validate:
