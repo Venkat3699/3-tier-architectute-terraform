@@ -10,7 +10,7 @@ terraform {
     bucket       = "terraform-s3-bucket-123"
     key          = "terraform.tfstate"
     region       = "ap-south-1"
-    use_lockfile = true
+    # use_lockfile = true
   }
 }
 
