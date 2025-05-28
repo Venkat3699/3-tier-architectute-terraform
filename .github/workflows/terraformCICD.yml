@@ -13,9 +13,7 @@ jobs:
     name: 'Terraform'
     runs-on: terraform-runner
     environment: Dev
-
     steps:
-    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -38,8 +36,9 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: '1.11.3'
+
   terraform_init:
-    name: terraform Format
+    name: terraform Init
     runs-on: terraform-runner
     needs: terraform
     steps:
