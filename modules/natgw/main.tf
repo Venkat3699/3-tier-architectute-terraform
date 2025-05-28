@@ -1,7 +1,7 @@
 # Elastic IP
 resource "aws_eip" "nat_eip" {
   count  = length(var.azs)
-  domain = "vpc"
+
 
   tags = {
     Name         = "${var.env}_NAT_EIP-${count.index + 1}"
