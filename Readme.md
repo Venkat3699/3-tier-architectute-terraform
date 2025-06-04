@@ -4,17 +4,21 @@ Deploy a scalable and resilient multi-tier architecture on AWS using Terraform.
 
 # 📌What is Terraform?
 
-Terraform is an infrastructure as code tool that lets you define both cloud and on-prem resources in human-readable configuration files that you can version, reuse, and share. You can then use a consistent workflow to provision and manage all of your infrastructure throughout its lifecycle.
+- Terraform is an open-source Infrastructure as Code (IaC) tool that allows you to define and provision cloud infrastructure using declarative configuration files.
+- It supports multiple cloud providers and helps automate the setup, management, and versioning of infrastructure efficiently.
 
 # 🚀 Multi-Tier Architecture Overview
 
-A multi-tier architecture typically consists of three layers: a presentation layer (web server), an application layer (app server), and a data layer (database server). Each layer serves a specific purpose and can be scaled independently, providing flexibility and efficiency.
+A 3-tier architecture consists of three main layers: a web tier (presentation layer), an application tier (logic layer), and a database tier (data layer). This structure enables modular development, independent scaling, and better fault isolation.
 
-**Web Tier**: This tier handles incoming user requests and can be horizontally scaled for increased capacity. It typically includes web servers and a load balancer for distributing traffic.
+**Web Tier**:
+This tier handles all incoming HTTP/S requests from users. It typically includes web servers like Nginx or Apache and load balancers to distribute traffic evenly across multiple instances. It ensures a responsive and accessible user interface.
 
-**Application Tier**: Application servers run our business logic and interact with the database tier. They can also be horizontally scaled to meet demand.
+**Application Tier**:
+This tier processes the core business logic and handles interactions between the web and database layers. Application servers run the backend code, such as Java, Node.js, or Python, and are horizontally scalable to handle dynamic workloads.
 
-**Database Tier**: The database stores and manages our application data. In this architecture, we use Amazon RDS for a managed database service.
+**Database Tier**:
+The database tier is responsible for storing, retrieving, and managing persistent application data. It uses relational or NoSQL databases like MySQL, PostgreSQL, or MongoDB—often managed via services like Amazon RDS for scalability and reliability.
 
 # 📌 Architecture Diagram
 
