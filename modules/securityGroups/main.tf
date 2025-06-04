@@ -97,8 +97,8 @@ resource "aws_security_group" "app_tier_sg" {
 
   ingress {
     description      = "Custom TCP 4000 from Internal Load Balancer SG"
-    from_port        = 4000
-    to_port          = 4000
+    from_port        = 80
+    to_port          = 80
     protocol         = "tcp"
     security_groups  = [aws_security_group.internal_lb_sg.id]
   }

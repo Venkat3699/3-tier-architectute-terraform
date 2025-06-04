@@ -1,4 +1,5 @@
-resource "aws_lb" "external_lb" {
+# External Load Balancer for web-tier
+resource "aws_lb" "web_lb" {
   name               = "${var.env}-external-lb"
   internal           = false
   load_balancer_type = "application"
@@ -8,7 +9,7 @@ resource "aws_lb" "external_lb" {
   enable_deletion_protection = false
 
   tags = {
-    Name        = "${var.env}-external-lb"
+    Name        = "${var.env}-web-lb"
     project_Name = var.project
   }
 }
@@ -37,8 +38,8 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
-resource "aws_lb_listener" "external_lb_listener" {
-  load_balancer_arn = aws_lb.external_lb.arn
+resource "aws_lb_listener" "web_lb_listener" {
+  load_balancer_arn = aws_lb.web_lb.arn
   port              = 80
   protocol          = "HTTP"
 
@@ -49,9 +50,9 @@ resource "aws_lb_listener" "external_lb_listener" {
 }
 
 
-# Internal Load Balancer
+# Internal Load Balancer for App-tier
 
-resource "aws_lb" "internal_lb" {
+resource "aws_lb" "app_lb" {
   name               = "${var.env}-internal-lb"
   internal           = true
   load_balancer_type = "application"
@@ -61,14 +62,14 @@ resource "aws_lb" "internal_lb" {
   enable_deletion_protection = false
 
   tags = {
-    Name        = "${var.env}-internal-lb"
+    Name        = "${var.env}-app-lb"
     project_Name = var.project
   }
 }
 
 resource "aws_lb_target_group" "app_tg" {
   name     = "${var.env}-app-tg"
-  port     = 4000
+  port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id
 
@@ -90,8 +91,8 @@ resource "aws_lb_target_group" "app_tg" {
 }
 
 resource "aws_lb_listener" "internal_lb_listener" {
-  load_balancer_arn = aws_lb.internal_lb.arn
-  port              = 4000
+  load_balancer_arn = aws_lb.app_lb.arn
+  port              = 80
   protocol          = "HTTP"
 
   default_action {

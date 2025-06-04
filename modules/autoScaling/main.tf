@@ -8,14 +8,7 @@ resource "aws_launch_template" "web_lt" {
   instance_type = var.instance_type
   key_name      = var.key_name
 
-  user_data = base64encode(<<EOF
-  #!/bin/bash
-  sudo apt update -y
-  sudo apt install nginx -y
-  sudo systemctl enable nginx
-  sudo systemctl start nginx
-  EOF
-  )
+  user_data = filebase64("user-data.sh")
 
   lifecycle {
     create_before_destroy = true
@@ -24,6 +17,7 @@ resource "aws_launch_template" "web_lt" {
   network_interfaces {
     security_groups = [var.web_tier_sg]
     associate_public_ip_address = true
+    device_index = 0
   }
 
   tag_specifications {
@@ -42,15 +36,14 @@ resource "aws_autoscaling_group" "web_asg" {
   max_size             = 2
   min_size             = 1
   vpc_zone_identifier  = var.web_subnets
+  target_group_arns = [var.web_tg_arn]
   health_check_type = "EC2"
   health_check_grace_period = 300
 
   launch_template {
     id      = aws_launch_template.web_lt.id
-    version = "$Latest"
+    version = aws_launch_template.web_lt.latest_version
   }
-
-  target_group_arns = [var.web_tg_arn]
 
   tag {
     key                 = "Name"
@@ -95,15 +88,14 @@ resource "aws_autoscaling_group" "app_asg" {
   max_size             = 2
   min_size             = 1
   vpc_zone_identifier  = var.app_subnets
+  target_group_arns = [var.app_tg_arn]
   health_check_type = "EC2"
   health_check_grace_period = 300
 
   launch_template {
     id      = aws_launch_template.app_lt.id
-    version = "$Latest"
+    version = aws_launch_template.app_lt.latest_version
   }
-
-  target_group_arns = [var.app_tg_arn]
 
   tag {
     key                 = "Name"
